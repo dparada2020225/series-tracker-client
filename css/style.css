@@ -525,3 +525,20 @@ main {
   outline: none;
   border-color: var(--rojo);
 }
+
+.btn-csv {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.45rem 1rem;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-csv:hover {
+  border-color: #555;
+  color: var(--text);
+}

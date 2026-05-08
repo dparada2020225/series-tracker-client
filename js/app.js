@@ -63,6 +63,10 @@ const App = {
 
     document.getElementById('sort').addEventListener('change', () => App.cargarSeries());
     document.getElementById('order').addEventListener('change', () => App.cargarSeries());
+
+    document.getElementById('btn-csv').addEventListener('click', () => {
+    App.exportarCSV();
+});
   },
 
   cargarSeries: async () => {
@@ -87,7 +91,36 @@ const App = {
     if (!confirm('¿Seguro que quieres eliminar esta serie?')) return;
     await api.deleteSerie(id);
     await App.cargarSeries();
+  },
+
+  exportarCSV: () => {
+  if (App.series.length === 0) {
+    alert('No hay series para exportar.');
+    return;
   }
+
+  const headers = ['ID', 'Título', 'Género', 'Estado', 'Rating', 'Imagen', 'Creado'];
+  const rows = App.series.map(s => [
+    s.id,
+    `"${(s.title || '').replace(/"/g, '""')}"`,
+    `"${(s.genre || '').replace(/"/g, '""')}"`,
+    s.status || '',
+    s.rating || '',
+    `"${(s.image_url || '').replace(/"/g, '""')}"`,
+    s.created_at ? new Date(s.created_at).toLocaleDateString() : ''
+  ]);
+
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'series.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());

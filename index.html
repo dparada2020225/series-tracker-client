@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Series Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <span class="logo-icon">▶</span>
+      <h1>Series<span>Tracker</span></h1>
+    </div>
+    <button id="btn-nueva">+ Agregar Serie</button>
+  </header>
+
+  <div class="hero">
+    <p class="hero-sub">Tu colección personal de series</p>
+    <div id="stats" class="stats">
+      <div class="stat"><span id="stat-total">0</span><label>Total</label></div>
+      <div class="stat"><span id="stat-viendo">0</span><label>Viendo</label></div>
+      <div class="stat"><span id="stat-completada">0</span><label>Completadas</label></div>
+      <div class="stat"><span id="stat-pendiente">0</span><label>Pendientes</label></div>
+    </div>
+  </div>
+
+  <main>
+    <div class="toolbar">
+      <h2 class="section-title">Mi Colección</h2>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="todas">Todas</button>
+        <button class="filter-btn" data-filter="viendo">Viendo</button>
+        <button class="filter-btn" data-filter="completada">Completadas</button>
+        <button class="filter-btn" data-filter="pendiente">Pendientes</button>
+      </div>
+    </div>
+
+    <section id="lista-series">
+      <p class="loading">Cargando series...</p>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-titulo">Nueva Serie</h2>
+        <button class="modal-close" id="btn-cancelar">✕</button>
+      </div>
+      <form id="form-serie">
+        <input type="hidden" id="serie-id" />
+
+        <div class="form-group">
+          <label>Título <span class="required">*</span></label>
+          <input type="text" id="titulo" placeholder="Ej: Breaking Bad" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Género</label>
+            <input type="text" id="genero" placeholder="Ej: Drama" />
+          </div>
+          <div class="form-group">
+            <label>Rating (0-10)</label>
+            <input type="number" id="rating" min="0" max="10" step="0.1" placeholder="9.5" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estado">
+            <option value="pendiente">⏳ Pendiente</option>
+            <option value="viendo">▶ Viendo</option>
+            <option value="completada">✓ Completada</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>URL de imagen (portada)</label>
+          <input type="text" id="imagen" placeholder="https://..." />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-cancelar-2">Cancelar</button>
+          <button type="submit" id="btn-guardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

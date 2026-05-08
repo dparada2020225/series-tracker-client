@@ -52,16 +52,31 @@ const App = {
         UI.renderSeries(App.series, App.filtroActual);
       });
     });
+
+    let searchTimeout;
+    document.getElementById('search').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        App.cargarSeries();
+      }, 400);
+    });
+
+    document.getElementById('sort').addEventListener('change', () => App.cargarSeries());
+    document.getElementById('order').addEventListener('change', () => App.cargarSeries());
   },
 
   cargarSeries: async () => {
     const lista = document.getElementById('lista-series');
     lista.innerHTML = '<p class="loading">Cargando series...</p>';
-    App.series = await api.getSeries();
+
+    const q = document.getElementById('search')?.value || '';
+    const sort = document.getElementById('sort')?.value || 'created_at';
+    const order = document.getElementById('order')?.value || 'desc';
+
+    App.series = await api.getSeries({ q, sort, order });
     UI.renderSeries(App.series, App.filtroActual);
     UI.actualizarStats(App.series);
   },
-
   editar: async (id) => {
     const serie = await api.getSerieById(id);
     UI.llenarForm(serie);

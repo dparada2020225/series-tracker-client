@@ -29,13 +29,25 @@
 
   <main>
     <div class="toolbar">
-      <h2 class="section-title">Mi Colección</h2>
-      <div class="filters">
+    <h2 class="section-title">Mi Colección</h2>
+    <div class="toolbar-right">
+        <input type="text" id="search" placeholder="🔍 Buscar serie..." class="search-input" />
+        <select id="sort" class="sort-select">
+        <option value="created_at">Más recientes</option>
+        <option value="title">Título A-Z</option>
+        <option value="rating">Rating</option>
+        </select>
+        <select id="order" class="order-select">
+        <option value="desc">↓ DESC</option>
+        <option value="asc">↑ ASC</option>
+        </select>
+        <div class="filters">
         <button class="filter-btn active" data-filter="todas">Todas</button>
         <button class="filter-btn" data-filter="viendo">Viendo</button>
         <button class="filter-btn" data-filter="completada">Completadas</button>
         <button class="filter-btn" data-filter="pendiente">Pendientes</button>
-      </div>
+        </div>
+    </div>
     </div>
 
     <section id="lista-series">

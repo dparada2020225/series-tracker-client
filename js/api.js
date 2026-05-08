@@ -1,10 +1,16 @@
 const API_URL = 'http://localhost:3000/api';
 
 const api = {
-  getSeries: async () => {
-    const res = await fetch(`${API_URL}/series`);
-    return res.json();
-  },
+  getSeries: async (params = {}) => {
+  const query = new URLSearchParams();
+  if (params.q) query.append('q', params.q);
+  if (params.sort) query.append('sort', params.sort);
+  if (params.order) query.append('order', params.order);
+
+  const url = `${API_URL}/series${query.toString() ? '?' + query.toString() : ''}`;
+  const res = await fetch(url);
+  return res.json();
+},
 
   getSerieById: async (id) => {
     const res = await fetch(`${API_URL}/series/${id}`);

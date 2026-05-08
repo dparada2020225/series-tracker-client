@@ -542,3 +542,47 @@ main {
   border-color: #555;
   color: var(--text);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+.pagination button {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: #555;
+  color: var(--text);
+}
+
+.pagination button.active {
+  background: var(--rojo);
+  border-color: var(--rojo);
+  color: white;
+  font-weight: 600;
+}
+
+.pagination button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pagination-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0 0.5rem;
+}

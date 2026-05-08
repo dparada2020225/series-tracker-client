@@ -6,6 +6,8 @@ const api = {
   if (params.q) query.append('q', params.q);
   if (params.sort) query.append('sort', params.sort);
   if (params.order) query.append('order', params.order);
+  if (params.page) query.append('page', params.page);
+  if (params.limit) query.append('limit', params.limit);
 
   const url = `${API_URL}/series${query.toString() ? '?' + query.toString() : ''}`;
   const res = await fetch(url);

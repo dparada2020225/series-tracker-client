@@ -74,7 +74,30 @@ const UI = {
     status: document.getElementById('estado').value,
     rating: document.getElementById('rating').value || null,
     image_url: document.getElementById('imagen').value || null
-  })
+  }),
+
+renderPaginacion: (pagination) => {
+  const contenedor = document.getElementById('pagination');
+  if (!contenedor) return;
+
+  const { page, totalPages, total, limit } = pagination;
+  if (totalPages <= 1) {
+    contenedor.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+  html += `<button onclick="App.irAPagina(${page - 1})" ${page === 1 ? 'disabled' : ''}>← Anterior</button>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="${i === page ? 'active' : ''}" onclick="App.irAPagina(${i})">${i}</button>`;
+  }
+
+  html += `<button onclick="App.irAPagina(${page + 1})" ${page === totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+  html += `<span class="pagination-info">${total} series en total</span>`;
+
+  contenedor.innerHTML = html;
+}
 };
 
 function formatStatus(status) {

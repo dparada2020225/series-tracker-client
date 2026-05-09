@@ -26,8 +26,9 @@ const UI = {
           />
           <div class="card-overlay">
             <button class="btn-editar" onclick="App.editar(${s.id})">Editar</button>
+            <button class="btn-rating" onclick="App.abrirRatings(${s.id}, '${s.title.replace(/'/g, "\\'")}')">★</button>
             <button class="btn-eliminar" onclick="App.eliminar(${s.id})">Eliminar</button>
-          </div>
+          </div>  
         </div>
         <div class="card-info">
           <h3 title="${s.title}">${s.title}</h3>

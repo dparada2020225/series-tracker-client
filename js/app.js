@@ -133,7 +133,66 @@ const App = {
     a.download = 'series.csv';
     a.click();
     URL.revokeObjectURL(url);
+  },
+
+abrirRatings: async (serieId, titulo) => {
+  document.getElementById('rating-serie-id').value = serieId;
+  document.getElementById('rating-modal-titulo').textContent = `★ ${titulo}`;
+  document.getElementById('modal-rating').classList.remove('hidden');
+  await App.cargarRatings(serieId);
+
+  document.getElementById('btn-cerrar-rating').onclick = () => {
+    document.getElementById('modal-rating').classList.add('hidden');
+    document.getElementById('form-rating').reset();
+  };
+
+  document.getElementById('modal-rating').onclick = (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      document.getElementById('modal-rating').classList.add('hidden');
+      document.getElementById('form-rating').reset();
+    }
+  };
+
+  document.getElementById('form-rating').onsubmit = async (e) => {
+    e.preventDefault();
+    const score = document.getElementById('rating-score').value;
+    const comment = document.getElementById('rating-comment').value;
+    await api.addRating(serieId, { score: parseFloat(score), comment });
+    document.getElementById('form-rating').reset();
+    await App.cargarRatings(serieId);
+  };
+},
+
+cargarRatings: async (serieId) => {
+  const data = await api.getRatings(serieId);
+  const promedio = document.getElementById('rating-promedio');
+  const lista = document.getElementById('lista-ratings');
+
+  promedio.innerHTML = data.average
+    ? `<div class="big-score">★ ${data.average}</div><p>${data.total} rating${data.total !== 1 ? 's' : ''}</p>`
+    : `<p style="color: var(--text-muted)">Sin ratings todavía</p>`;
+
+  if (data.ratings.length === 0) {
+    lista.innerHTML = '';
+    return;
   }
+
+  lista.innerHTML = data.ratings.map(r => `
+    <div class="rating-item">
+      <div class="rating-item-left">
+        <span class="rating-item-score">★ ${r.score}</span>
+        ${r.comment ? `<span class="rating-item-comment">${r.comment}</span>` : ''}
+      </div>
+      <button class="rating-item-delete" onclick="App.eliminarRating(${serieId}, ${r.id})">✕</button>
+    </div>
+  `).join('');
+},
+
+eliminarRating: async (serieId, ratingId) => {
+  await api.deleteRating(serieId, ratingId);
+  await App.cargarRatings(serieId);
+}
+
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());

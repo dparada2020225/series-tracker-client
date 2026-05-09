@@ -41,5 +41,25 @@ const api = {
     await fetch(`${API_URL}/series/${id}`, {
       method: 'DELETE'
     });
-  }
+  },
+
+  getRatings: async (serieId) => {
+  const res = await fetch(`${API_URL}/series/${serieId}/rating`);
+  return res.json();
+},
+
+addRating: async (serieId, data) => {
+  const res = await fetch(`${API_URL}/series/${serieId}/rating`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+},
+
+deleteRating: async (serieId, ratingId) => {
+  await fetch(`${API_URL}/series/${serieId}/rating/${ratingId}`, {
+    method: 'DELETE'
+  });
+}
 };

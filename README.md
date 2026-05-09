@@ -2,6 +2,10 @@
 
 Cliente web para Series Tracker. Construido con HTML, CSS y JavaScript vanilla. Consume la API REST del backend con fetch().
 
+## Screenshot
+
+![Series Tracker](screenshot.png)
+
 ## Stack
 - HTML5
 - CSS3

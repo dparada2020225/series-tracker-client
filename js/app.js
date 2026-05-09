@@ -25,6 +25,18 @@ const App = {
       if (e.target.classList.contains('modal-overlay')) UI.cerrarModal();
     });
 
+    document.getElementById('lista-series').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      const title = btn.dataset.title;
+
+      if (action === 'editar') App.editar(id);
+      if (action === 'eliminar') App.eliminar(id);
+      if (action === 'rating') App.abrirRatings(id, title);
+    });
+
     document.getElementById('form-serie').addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('serie-id').value;
@@ -108,6 +120,18 @@ const App = {
     App.cargarSeries();
   },
 
+  editar: async (id) => {
+    const serie = await api.getSerieById(id);
+    UI.llenarForm(serie);
+    UI.abrirModal('Editar Serie');
+  },
+
+  eliminar: async (id) => {
+    if (!confirm('¿Seguro que quieres eliminar esta serie?')) return;
+    await api.deleteSerie(id);
+    await App.cargarSeries();
+  },
+
   exportarCSV: () => {
     if (App.series.length === 0) {
       alert('No hay series para exportar.');
@@ -135,64 +159,69 @@ const App = {
     URL.revokeObjectURL(url);
   },
 
-abrirRatings: async (serieId, titulo) => {
-  document.getElementById('rating-serie-id').value = serieId;
-  document.getElementById('rating-modal-titulo').textContent = `★ ${titulo}`;
-  document.getElementById('modal-rating').classList.remove('hidden');
-  await App.cargarRatings(serieId);
+  abrirRatings: async (serieId, titulo) => {
+    document.getElementById('rating-serie-id').value = serieId;
+    document.getElementById('rating-modal-titulo').textContent = `★ ${titulo}`;
+    document.getElementById('modal-rating').classList.remove('hidden');
+    await App.cargarRatings(serieId);
 
-  document.getElementById('btn-cerrar-rating').onclick = () => {
-    document.getElementById('modal-rating').classList.add('hidden');
-    document.getElementById('form-rating').reset();
-  };
-
-  document.getElementById('modal-rating').onclick = (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
+    document.getElementById('btn-cerrar-rating').onclick = () => {
       document.getElementById('modal-rating').classList.add('hidden');
       document.getElementById('form-rating').reset();
+    };
+
+    document.getElementById('modal-rating').onclick = (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        document.getElementById('modal-rating').classList.add('hidden');
+        document.getElementById('form-rating').reset();
+      }
+    };
+
+    document.getElementById('form-rating').onsubmit = async (e) => {
+      e.preventDefault();
+      const score = document.getElementById('rating-score').value;
+      const comment = document.getElementById('rating-comment').value;
+      await api.addRating(serieId, { score: parseFloat(score), comment });
+      document.getElementById('form-rating').reset();
+      await App.cargarRatings(serieId);
+    };
+  },
+
+  cargarRatings: async (serieId) => {
+    const data = await api.getRatings(serieId);
+    const promedio = document.getElementById('rating-promedio');
+    const lista = document.getElementById('lista-ratings');
+
+    promedio.innerHTML = data.average
+      ? `<div class="big-score">★ ${data.average}</div><p>${data.total} rating${data.total !== 1 ? 's' : ''}</p>`
+      : `<p style="color: var(--text-muted)">Sin ratings todavía</p>`;
+
+    if (data.ratings.length === 0) {
+      lista.innerHTML = '';
+      return;
     }
-  };
 
-  document.getElementById('form-rating').onsubmit = async (e) => {
-    e.preventDefault();
-    const score = document.getElementById('rating-score').value;
-    const comment = document.getElementById('rating-comment').value;
-    await api.addRating(serieId, { score: parseFloat(score), comment });
-    document.getElementById('form-rating').reset();
-    await App.cargarRatings(serieId);
-  };
-},
-
-cargarRatings: async (serieId) => {
-  const data = await api.getRatings(serieId);
-  const promedio = document.getElementById('rating-promedio');
-  const lista = document.getElementById('lista-ratings');
-
-  promedio.innerHTML = data.average
-    ? `<div class="big-score">★ ${data.average}</div><p>${data.total} rating${data.total !== 1 ? 's' : ''}</p>`
-    : `<p style="color: var(--text-muted)">Sin ratings todavía</p>`;
-
-  if (data.ratings.length === 0) {
-    lista.innerHTML = '';
-    return;
-  }
-
-  lista.innerHTML = data.ratings.map(r => `
-    <div class="rating-item">
-      <div class="rating-item-left">
-        <span class="rating-item-score">★ ${r.score}</span>
-        ${r.comment ? `<span class="rating-item-comment">${r.comment}</span>` : ''}
+    lista.innerHTML = data.ratings.map(r => `
+      <div class="rating-item">
+        <div class="rating-item-left">
+          <span class="rating-item-score">★ ${r.score}</span>
+          ${r.comment ? `<span class="rating-item-comment">${r.comment}</span>` : ''}
+        </div>
+        <button class="rating-item-delete" data-action="delete-rating" data-serie-id="${serieId}" data-rating-id="${r.id}">✕</button>
       </div>
-      <button class="rating-item-delete" onclick="App.eliminarRating(${serieId}, ${r.id})">✕</button>
-    </div>
-  `).join('');
-},
+    `).join('');
 
-eliminarRating: async (serieId, ratingId) => {
-  await api.deleteRating(serieId, ratingId);
-  await App.cargarRatings(serieId);
-}
+    document.getElementById('lista-ratings').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action="delete-rating"]');
+      if (!btn) return;
+      App.eliminarRating(btn.dataset.serieId, btn.dataset.ratingId);
+    });
+  },
 
+  eliminarRating: async (serieId, ratingId) => {
+    await api.deleteRating(serieId, ratingId);
+    await App.cargarRatings(serieId);
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());

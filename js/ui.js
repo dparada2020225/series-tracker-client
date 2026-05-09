@@ -25,10 +25,10 @@ const UI = {
             onerror="this.src='https://placehold.co/200x300/141414/333?text=Sin+imagen'"
           />
           <div class="card-overlay">
-            <button class="btn-editar" onclick="App.editar(${s.id})">Editar</button>
-            <button class="btn-rating" onclick="App.abrirRatings(${s.id}, '${s.title.replace(/'/g, "\\'")}')">★</button>
-            <button class="btn-eliminar" onclick="App.eliminar(${s.id})">Eliminar</button>
-          </div>  
+            <button class="btn-editar" data-action="editar" data-id="${s.id}">Editar</button>
+            <button class="btn-rating" data-action="rating" data-id="${s.id}" data-title="${s.title.replace(/'/g, "\\'")}">★</button>
+            <button class="btn-eliminar" data-action="eliminar" data-id="${s.id}">Eliminar</button>
+          </div>
         </div>
         <div class="card-info">
           <h3 title="${s.title}">${s.title}</h3>
@@ -77,28 +77,34 @@ const UI = {
     image_url: document.getElementById('imagen').value || null
   }),
 
-renderPaginacion: (pagination) => {
-  const contenedor = document.getElementById('pagination');
-  if (!contenedor) return;
+  renderPaginacion: (pagination) => {
+    const contenedor = document.getElementById('pagination');
+    if (!contenedor) return;
 
-  const { page, totalPages, total, limit } = pagination;
-  if (totalPages <= 1) {
-    contenedor.innerHTML = '';
-    return;
+    const { page, totalPages, total } = pagination;
+    if (totalPages <= 1) {
+      contenedor.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    html += `<button data-action="pagina" data-pagina="${page - 1}" ${page === 1 ? 'disabled' : ''}>← Anterior</button>`;
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `<button class="${i === page ? 'active' : ''}" data-action="pagina" data-pagina="${i}">${i}</button>`;
+    }
+
+    html += `<button data-action="pagina" data-pagina="${page + 1}" ${page === totalPages ? 'disabled' : ''}>Siguiente →</button>`;
+    html += `<span class="pagination-info">${total} series en total</span>`;
+
+    contenedor.innerHTML = html;
+
+    contenedor.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action="pagina"]');
+      if (!btn || btn.disabled) return;
+      App.irAPagina(parseInt(btn.dataset.pagina));
+    });
   }
-
-  let html = '';
-  html += `<button onclick="App.irAPagina(${page - 1})" ${page === 1 ? 'disabled' : ''}>← Anterior</button>`;
-
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<button class="${i === page ? 'active' : ''}" onclick="App.irAPagina(${i})">${i}</button>`;
-  }
-
-  html += `<button onclick="App.irAPagina(${page + 1})" ${page === totalPages ? 'disabled' : ''}>Siguiente →</button>`;
-  html += `<span class="pagination-info">${total} series en total</span>`;
-
-  contenedor.innerHTML = html;
-}
 };
 
 function formatStatus(status) {

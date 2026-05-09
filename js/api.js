@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://series-tracker-api-t5ah.onrender.com/api';
 
 const api = {
   getSeries: async (params = {}) => {

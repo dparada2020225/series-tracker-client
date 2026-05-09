@@ -26,32 +26,30 @@ frontend/
     ├── ui.js      # Funciones de renderizado del DOM
     └── app.js     # Lógica principal y eventos
 
-## Funcionalidades
-
-- Ver todas las series en formato de cards
-- Filtrar por estado (Viendo, Completada, Pendiente)
-- Stats en tiempo real (total, viendo, completadas, pendientes)
-- Crear, editar y eliminar series
-- Soporte para imagen de portada via URL
-
 ## CORS
 
 CORS es una política de seguridad del navegador que bloquea peticiones entre orígenes distintos. El backend tiene configurado el header Access-Control-Allow-Origin: * para permitir las peticiones desde el cliente.
 
 ## Repositorio Backend
 
-https://github.com/tu-usuario/series-tracker-backend
+https://github.com/dparada2020225/series-tracker-api
 
 ## App publicada
 
-https://tu-usuario.github.io/series-tracker-frontend
+https://dparada2020225.github.io/series-tracker-client/
 
 ## Challenges implementados
 
 - Diseño visual profesional estilo Netflix
-- Filtros por estado
-- Stats en tiempo real
+- Códigos HTTP correctos (201, 204, 404, 400)
+- Validación server-side con respuestas JSON descriptivas
+- Búsqueda por nombre con ?q=
+- Ordenamiento con ?sort= y ?order=
+- Paginación con ?page= y ?limit=
+- Exportar lista de series a CSV generado manualmente desde JavaScript
+- Swagger UI corriendo desde el backend
+- Sistema de rating con tabla propia, endpoints REST y visible en el cliente
 
 ## Reflexión
 
-Trabajar con JavaScript vanilla obliga a entender cómo funciona el DOM y fetch() sin abstracciones. Al principio se extraña un framework, pero el resultado es código más liviano y sin dependencias. Lo volvería a usar para proyectos pequeños donde no se justifica la complejidad de React.
+Trabajar con JavaScript vanilla obliga a entender cómo funciona el DOM y fetch() sin abstracciones. Al principio se extraña un framework, pero el resultado es código más liviano y sin dependencias. La separación entre cliente y servidor hace el código más mantenible y reutilizable. Lo volvería a usar para proyectos pequeños donde no se justifica la complejidad de React.
